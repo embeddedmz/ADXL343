@@ -40,13 +40,10 @@ time.sleep(0.05)
 bus.write_byte_data(DEVICE_ADDR_7_BITS, POWER_CTL, 0x08)
 time.sleep(0.05)
 
-#bus.write_byte_data(DEVICE_ADDR_7_BITS, POWER_CTL, 0x)
-
 while True:
     try:
         measList = bus.read_i2c_block_data(DEVICE_ADDR_7_BITS, DATA_X0, 6)
         #print(measList)
-        #sys.stdout.write('Accelerometer rcvd bytes : (%d, %d, %d, %d, %d, %d)\n' % (dataX0, dataX1, dataY0, dataY1, dataZ0, dataZ1))
         
         xAccel = (measList[1] << 8) + measList[0]
         yAccel = (measList[3] << 8) + measList[2]
