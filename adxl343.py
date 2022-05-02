@@ -22,6 +22,7 @@ except IOError:
 
 # constants
 DEVICE_ADDR_7_BITS = 0x1D
+BW_RATE = 0x2C
 POWER_CTL = 0x2D
 DATA_FORMAT = 0x31
 DATA_X0 = 0x32
@@ -32,7 +33,11 @@ DATA_Z0 = 0x36
 DATA_Z1 = 0x37
 
 range = bus.read_byte_data(DEVICE_ADDR_7_BITS, DATA_FORMAT)
-sys.stdout.write('Range code : %d\n' % (range & 0x03))
+sys.stdout.write('Range code (must be 0 otherwise modify this script to update it) : %d\n' % (range & 0x03))
+time.sleep(0.05)
+
+rate = bus.read_byte_data(DEVICE_ADDR_7_BITS, BW_RATE)
+sys.stdout.write('Rate code (must be 10 otherwise modify this script to update it) : %d\n' % (rate & 0x0F))
 time.sleep(0.05)
 
 # Exit standby mode
@@ -49,7 +54,9 @@ while True:
         yAccel = (measList[3] << 8) + measList[2]
         zAccel = (measList[5] << 8) + measList[4]
         
-        sys.stdout.write('Accelerometer : X=%4d, Y=%4d, Z=%4d\n' % (xAccel, yAccel, zAccel))
+        #sys.stdout.write('Accelerometer : X=%4d, Y=%4d, Z=%4d\n' % (xAccel, yAccel, zAccel))
+        # 4 mG/bit, we need 250 bit to have 1 G
+        sys.stdout.write('Accelerometer : X=%4d G, Y=%4d G, Z=%4d G\n' % (xAccel / 250, yAccel / 250, zAccel / 250))
         
         time.sleep(0.05)
         
