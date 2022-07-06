@@ -1,13 +1,13 @@
 # import the needed packages
+import os
 import smbus
 import sys
-import os
 import time
 
-'''
 def unsigned_byte_to_signed_byte(unsigned_byte):
     return unsigned_byte - 256 if unsigned_byte > 127 else unsigned_byte
 
+'''
 # word = 16-bit
 def unsigned_word_to_signed_word(unsigned_word):
     return unsigned_word - 65536 if unsigned_word > 32767 else unsigned_word
@@ -50,13 +50,13 @@ while True:
         measList = bus.read_i2c_block_data(DEVICE_ADDR_7_BITS, DATA_X0, 6)
         #print(measList)
         
-        xAccel = (measList[1] << 8) + measList[0]
-        yAccel = (measList[3] << 8) + measList[2]
-        zAccel = (measList[5] << 8) + measList[4]
+        xAccel = (unsigned_byte_to_signed_byte(measList[1]) << 8) + measList[0]
+        yAccel = (unsigned_byte_to_signed_byte(measList[3]) << 8) + measList[2]
+        zAccel = (unsigned_byte_to_signed_byte(measList[5]) << 8) + measList[4]
         
         #sys.stdout.write('Accelerometer : X=%4d, Y=%4d, Z=%4d\n' % (xAccel, yAccel, zAccel))
         # 4 mG/bit, we need 250 bit to have 1 G
-        sys.stdout.write('Accelerometer : X=%4d G, Y=%4d G, Z=%4d G\n' % (xAccel / 250, yAccel / 250, zAccel / 250))
+        sys.stdout.write('Accelerometer : X=%.4f G, Y=%.4f G, Z=%.4f G\n' % (xAccel / 250, yAccel / 250, zAccel / 250))
         
         time.sleep(0.05)
         
